@@ -1,7 +1,9 @@
-﻿using BookSearchEngine.App.Concrete;
+﻿using BookSearchEngine.App.Abstract;
+using BookSearchEngine.App.Concrete;
 using BookSearchEngine.Domain.Entity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BookSearchEngine.App.Menagers
@@ -9,10 +11,10 @@ namespace BookSearchEngine.App.Menagers
     public class BookMenager
     {
         private readonly MenuServices _menuService;
-        private BookServices _bookService;
-        public BookMenager(MenuServices menuService)
+        private IService<Book> _bookService;
+        public BookMenager(MenuServices menuService, IService<Book> bookService)
         {
-            _bookService = new BookServices();
+            _bookService = bookService;
             _menuService = menuService;
         }
         public void AddNewBook()
@@ -48,17 +50,64 @@ namespace BookSearchEngine.App.Menagers
             Console.WriteLine();
 
             var bookList = _bookService.GetAllBooks();
-
-            var booksAfterSort = _bookService.SortBooks(operation.KeyChar, bookList);
-            foreach(var book in booksAfterSort)
+            
+            if (operation.KeyChar == '1')
             {
-                Console.WriteLine($"{book.Id}. {book.Title}     {book.Author}     {book.Grade}");
+                bookList = bookList.OrderBy(p => p.Id).ToList();
+                foreach (var book in bookList)
+                {
+                    Console.WriteLine($"{book.Id}. {book.Title}     {book.Author}     {book.Grade}");
+                }
             }
+            else if (operation.KeyChar == '2')
+            {
+                bookList = bookList.OrderBy(p => p.Title).ToList();
+                foreach (var book in bookList)
+                {
+                    Console.WriteLine($"{book.Id}. {book.Title}     {book.Author}     {book.Grade}");
+                }
+            }
+            else if (operation.KeyChar == '3')
+            {
+                bookList = bookList.OrderBy(p => p.Author).ToList();
+                foreach (var book in bookList)
+                {
+                    Console.WriteLine($"{book.Id}. {book.Title}     {book.Author}     {book.Grade}");
+                }
+            }
+            else if (operation.KeyChar == '4')
+            {
+                bookList = bookList.OrderBy(p => p.Grade).ToList();
+                foreach (var book in bookList)
+                {
+                    Console.WriteLine($"{book.Id}. {book.Title}     {book.Author}     {book.Grade}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("You entered invalid operation.");
+            }
+            
 
         }
         public void RemoveBookView()
         {
-            var menu = _menuService.GetMenuByMenuName("Remove");
+            int idToRemove;
+            Console.WriteLine("\nPlease enter book id: ");
+            idToRemove = Int32.Parse(Console.ReadLine());
+            var bookRemoved = _bookService.RemoveBookById(idToRemove);
+            if (bookRemoved != null)
+            {
+                Console.WriteLine("\nBook with this data has been removed: ");
+                Console.WriteLine("\nId: " + bookRemoved.Id);
+                Console.WriteLine("Title: " + bookRemoved.Title);
+                Console.WriteLine("Author: " + bookRemoved.Author);
+                Console.WriteLine("Grade: " + bookRemoved.Grade);
+                Console.WriteLine("Description: " + bookRemoved.Description);
+            }
+            else
+                Console.WriteLine("You enter invalid id.");
+            /*var menu = _menuService.GetMenuByMenuName("Remove");
             Console.WriteLine("\nPlease choose operation. \n");
             foreach(var menuItem in menu)
             {
@@ -72,25 +121,58 @@ namespace BookSearchEngine.App.Menagers
                 int idToRemove;
                 Console.WriteLine("\nPlease enter book id: ");
                 idToRemove = Int32.Parse(Console.ReadLine());
-                _bookService.RemoveBookById(idToRemove);
+                var bookRemoved = _bookService.RemoveBookById(idToRemove);
+                if (bookRemoved != null)
+                {
+                    Console.WriteLine("\nBook with this data has been removed: ");
+                    Console.WriteLine("\nId: " + bookRemoved.Id);
+                    Console.WriteLine("Title: " + bookRemoved.Title);
+                    Console.WriteLine("Author: " + bookRemoved.Author);
+                    Console.WriteLine("Grade: " + bookRemoved.Grade);
+                    Console.WriteLine("Description: " + bookRemoved.Description);
+                }
+                else
+                    Console.WriteLine("You enter invalid id.");
             }
             else if(operation.KeyChar == '2')
             {
                 string titleToRemove;
                 Console.WriteLine("\nPlease enter book title: ");
                 titleToRemove = Console.ReadLine();
-                _bookService.RemoveBookByTitle(titleToRemove);
+                var bookRemoved = _bookService.RemoveBookByTitle(titleToRemove);
+                if (bookRemoved != null)
+                {
+                    Console.WriteLine("\nBook with this data has been removed: ");
+                    Console.WriteLine("\nId: " + bookRemoved.Id);
+                    Console.WriteLine("Title: " + bookRemoved.Title);
+                    Console.WriteLine("Author: " + bookRemoved.Author);
+                    Console.WriteLine("Grade: " + bookRemoved.Grade);
+                    Console.WriteLine("Description: " + bookRemoved.Description);
+                }
+                else
+                    Console.WriteLine("You enter invalid title.");
             }
             else
             {
                 Console.WriteLine("You entered invalid operation.");
                 RemoveBookView();
-            }
+            }*/
         }
 
         public void ShowDetails()
         {
-            var menu = _menuService.GetMenuByMenuName("Details");
+            int idToDetails;
+            Console.WriteLine("\nPlease enter book id: ");
+            idToDetails = Int32.Parse(Console.ReadLine());
+            var bookDetails = _bookService.GetBookById(idToDetails);
+            Console.WriteLine("\nYou chose book with following data: ");
+            Console.WriteLine("\nId: " + bookDetails.Id);
+            Console.WriteLine("Title: " + bookDetails.Title);
+            Console.WriteLine("Author: " + bookDetails.Author);
+            Console.WriteLine("Grade: " + bookDetails.Grade);
+            Console.WriteLine("Description: " + bookDetails.Description);
+
+            /*var menu = _menuService.GetMenuByMenuName("Details");
             Console.WriteLine("\nPlease choose operation. \n");
             foreach (var menuItem in menu)
             {
@@ -116,16 +198,39 @@ namespace BookSearchEngine.App.Menagers
             {
                 Console.WriteLine("You entered invalid operation.");
                 ShowDetails();
-            }
+            }*/
 
         }
-        /*public void UpdateBook()
+        public void UpdateBook()
         {
             Console.WriteLine("\nPlease enter book id: ");
             int idToUpdate = Int32.Parse(Console.ReadLine());
-            Console.WriteLine();
+            var bookToReplece = _bookService.GetBookById(idToUpdate);
+            Console.WriteLine("Please update book.");
+
+            Console.WriteLine("Old title: " + bookToReplece.Title);
+            Console.Write("New Title: ");
+            string newTitle = Console.ReadLine();
+            bookToReplece.Title = newTitle;
+
+            Console.WriteLine("Old Author: " + bookToReplece.Author);
+            Console.Write("New Author: ");
+            string newAuthor = Console.ReadLine();
+            bookToReplece.Author = newAuthor;
+
+            Console.WriteLine("Old Grade: " + bookToReplece.Grade);
+            Console.Write("New Grade: ");
+            string newGrade = Console.ReadLine();
+            bookToReplece.Grade = newGrade;
+
+            Console.WriteLine("Old Description: " + bookToReplece.Description);
+            Console.Write("New Description: ");
+            string newDescription = Console.ReadLine();
+            bookToReplece.Description = newDescription;
+
+            _bookService.UpdateBook(bookToReplece);
 
 
-        }*/
+        }
     }
 }

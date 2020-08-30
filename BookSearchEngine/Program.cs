@@ -25,7 +25,8 @@ namespace BookSearchEngine
             ////4.2 szczegoly ksiazki po wpisaniu albo tytulu
 
             MenuServices actionService = new MenuServices();
-            BookMenager bookMenager = new BookMenager(actionService);
+            BookServices bookService = new BookServices();
+            BookMenager bookMenager = new BookMenager(actionService, bookService);
 
 
             Console.WriteLine("\n ----- Welcome in my Book Search Engine ----- \n");
@@ -57,9 +58,9 @@ namespace BookSearchEngine
                     case '4':
                         bookMenager.ShowDetails();
                         break;
-                    /*case '5':
+                    case '5':
                         bookMenager.UpdateBook();
-                        break;*/
+                        break;
                     default:
                         Console.WriteLine("\nYou have entered incorrect operation!\n");
                         break;

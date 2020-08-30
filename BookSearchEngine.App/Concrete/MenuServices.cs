@@ -35,7 +35,7 @@ namespace BookSearchEngine.App.Concrete
             AddBook(new Menu(2, "Remove book", "Main"));
             AddBook(new Menu(3, "List of books", "Main"));
             AddBook(new Menu(4, "Show details", "Main"));
-            //AddBook(new Menu(5, "Update book", "Main"));
+            AddBook(new Menu(5, "Update book", "Main"));
 
             AddBook(new Menu(1, "Remove by id", "Remove"));
             AddBook(new Menu(2, "Remove by title", "Remove"));

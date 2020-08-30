@@ -40,20 +40,31 @@ namespace BookSearchEngine.App.Common
         {
             return Books;
         }
-
-        public void RemoveBook(T book)
+        public T GetBookById(int idBook)
         {
-            Books.Remove(book);
+            var entity = Books.FirstOrDefault(predicate => predicate.Id == idBook);
+            return entity;
         }
 
-        public int UpdateBook(T book)
+        public T RemoveBookById(int idBook)
+        {
+            var entity = Books.FirstOrDefault(p => p.Id == idBook);
+            Books.Remove(entity);
+            return entity;
+        }
+        /*public void RemoveBookByTitle(string titleBook)
+        {
+            var entity = Books.FirstOrDefault(p => p. == idBook);
+            Books.Remove(entity);
+        }*/
+
+        public void UpdateBook(T book)
         {
             var entity = Books.FirstOrDefault(predicate => predicate.Id == book.Id);
             if (entity != null)
             {
                 entity = book;
             }
-            return entity.Id;
         }
         
     }

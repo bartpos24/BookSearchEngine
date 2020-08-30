@@ -12,8 +12,13 @@ namespace BookSearchEngine.App.Abstract
 
         void AddBook(T book);
 
-        int UpdateBook(T book);
+        void UpdateBook(T book);
 
-        void RemoveBook(T book);
+        T RemoveBookById(int idBook);
+        //T RemoveBookByTitle(string titleBook);
+
+        T GetBookById(int idBook);
+
+        int GetLastId();
     }
 }
