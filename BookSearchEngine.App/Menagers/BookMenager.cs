@@ -33,6 +33,7 @@ namespace BookSearchEngine.App.Menagers
 
             Book newBook = new Book(lastId+1, bookTitle, bookAuthor, bookGrade, bookDescribtion);
             _bookService.AddBook(newBook);
+            
 
         }
 
@@ -165,12 +166,20 @@ namespace BookSearchEngine.App.Menagers
             Console.WriteLine("\nPlease enter book id: ");
             idToDetails = Int32.Parse(Console.ReadLine());
             var bookDetails = _bookService.GetBookById(idToDetails);
-            Console.WriteLine("\nYou chose book with following data: ");
-            Console.WriteLine("\nId: " + bookDetails.Id);
-            Console.WriteLine("Title: " + bookDetails.Title);
-            Console.WriteLine("Author: " + bookDetails.Author);
-            Console.WriteLine("Grade: " + bookDetails.Grade);
-            Console.WriteLine("Description: " + bookDetails.Description);
+            if(bookDetails == null)
+            {
+                Console.WriteLine("\nDoesn't have book with this id.\n");
+            }
+            else
+            {
+                Console.WriteLine("\nYou chose book with following data: ");
+                Console.WriteLine("\nId: " + bookDetails.Id);
+                Console.WriteLine("Title: " + bookDetails.Title);
+                Console.WriteLine("Author: " + bookDetails.Author);
+                Console.WriteLine("Grade: " + bookDetails.Grade);
+                Console.WriteLine("Description: " + bookDetails.Description);
+            }
+            
 
             /*var menu = _menuService.GetMenuByMenuName("Details");
             Console.WriteLine("\nPlease choose operation. \n");

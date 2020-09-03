@@ -15,7 +15,6 @@ namespace BookSearchEngine.App.Abstract
         void UpdateBook(T book);
 
         T RemoveBookById(int idBook);
-        //T RemoveBookByTitle(string titleBook);
 
         T GetBookById(int idBook);
 
