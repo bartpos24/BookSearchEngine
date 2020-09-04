@@ -11,8 +11,8 @@ namespace BookSearchEngine.App.Menagers
     public class BookMenager
     {
         private readonly MenuServices _menuService;
-        private IService<Book> _bookService;
-        public BookMenager(MenuServices menuService, IService<Book> bookService)
+        private IBookService _bookService;
+        public BookMenager(MenuServices menuService, IBookService bookService)
         {
             _bookService = bookService;
             _menuService = menuService;
@@ -162,84 +162,129 @@ namespace BookSearchEngine.App.Menagers
 
         public void ShowDetails()
         {
-            int idToDetails;
-            Console.WriteLine("\nPlease enter book id: ");
-            idToDetails = Int32.Parse(Console.ReadLine());
-            var bookDetails = _bookService.GetBookById(idToDetails);
-            if(bookDetails == null)
-            {
-                Console.WriteLine("\nDoesn't have book with this id.\n");
-            }
-            else
-            {
-                Console.WriteLine("\nYou chose book with following data: ");
-                Console.WriteLine("\nId: " + bookDetails.Id);
-                Console.WriteLine("Title: " + bookDetails.Title);
-                Console.WriteLine("Author: " + bookDetails.Author);
-                Console.WriteLine("Grade: " + bookDetails.Grade);
-                Console.WriteLine("Description: " + bookDetails.Description);
-            }
-            
-
-            /*var menu = _menuService.GetMenuByMenuName("Details");
-            Console.WriteLine("\nPlease choose operation. \n");
-            foreach (var menuItem in menu)
-            {
-                Console.WriteLine($"{menuItem.Id}. {menuItem.Name}");
-            }
-            var operation = Console.ReadKey();
+            var menu = _menuService.GetMenuByMenuName("Details");
             Console.WriteLine();
-            if(operation.KeyChar == '1')
+            foreach (var item in menu)
+            {
+                Console.WriteLine($"{item.Id}. {item.Name}");
+            }
+            Console.WriteLine("\nPlease choose operation: ");
+            var operation = Console.ReadKey();
+
+
+            if (operation.KeyChar == '1')
             {
                 int idToDetails;
                 Console.WriteLine("\nPlease enter book id: ");
                 idToDetails = Int32.Parse(Console.ReadLine());
-                _bookService.ShowDetailsById(idToDetails);
+                var bookDetails = _bookService.GetBookById(idToDetails);
+                if (bookDetails == null)
+                {
+                    Console.WriteLine("\nBook with this id doesn't exists.\n");
+                }
+                else
+                {
+                    ShowDetailsView(bookDetails);
+                }
+
             }
             else if (operation.KeyChar == '2')
             {
-                string titleToDetails;
                 Console.WriteLine("\nPlease enter book title: ");
-                titleToDetails = Console.ReadLine();
-                _bookService.ShowDetailsByTitle(titleToDetails);
+                string titleToDetails = Console.ReadLine();
+                var bookDetails = _bookService.GetBookByTitle(titleToDetails);
+                if (bookDetails == null)
+                {
+                    Console.WriteLine("\nBook with this title doesn't exists.\n");
+                }
+                else
+                {
+                    ShowDetailsView(bookDetails);
+                }
             }
             else
-            {
-                Console.WriteLine("You entered invalid operation.");
-                ShowDetails();
-            }*/
+                Console.WriteLine("\nYou entered invalid operation.\n");
 
+        }
+        private void ShowDetailsView(Book bookDetails)
+        {
+            Console.WriteLine("\nYou chose book with following data: ");
+            Console.WriteLine("\nId: " + bookDetails.Id);
+            Console.WriteLine("Title: " + bookDetails.Title);
+            Console.WriteLine("Author: " + bookDetails.Author);
+            Console.WriteLine("Grade: " + bookDetails.Grade);
+            Console.WriteLine("Description: " + bookDetails.Description + "\n");
         }
         public void UpdateBook()
         {
-            Console.WriteLine("\nPlease enter book id: ");
-            int idToUpdate = Int32.Parse(Console.ReadLine());
-            var bookToReplece = _bookService.GetBookById(idToUpdate);
+            var menu = _menuService.GetMenuByMenuName("Update");
+            Console.WriteLine();
+            foreach(var item in menu)
+            {
+                Console.WriteLine($"{item.Id}. {item.Name}");
+            }
+            Console.WriteLine("\nPlease choose operation: ");
+            var operation = Console.ReadKey();
+            
+
+            if (operation.KeyChar == '1')
+            {
+                Console.WriteLine("\nPlease enter book id: ");
+                int idToUpdate = Int32.Parse(Console.ReadLine());
+                var bookToReplece = _bookService.GetBookById(idToUpdate);
+                if(bookToReplece == null)
+                {
+                    Console.WriteLine("\nBook with this id doesn't exists");
+                }
+                else
+                {
+                    UpdateBookView(bookToReplece);
+                }
+
+            }
+            else if (operation.KeyChar == '2')
+            {
+                Console.WriteLine("\nPlease enter book title: ");
+                string titleToUpdate = Console.ReadLine();
+                var bookToReplece = _bookService.GetBookByTitle(titleToUpdate);
+                if (bookToReplece == null)
+                {
+                    Console.WriteLine("\nBook with this title doesn't exists");
+                }
+                else
+                {
+                    UpdateBookView(bookToReplece);
+                }
+            }
+            else
+                Console.WriteLine("\nYou entered invalid operation.\n");
+            
+        }
+
+        private void UpdateBookView(Book bookToReplace)
+        {
             Console.WriteLine("Please update book.");
 
-            Console.WriteLine("Old title: " + bookToReplece.Title);
+            Console.WriteLine("Old title: " + bookToReplace.Title);
             Console.Write("New Title: ");
             string newTitle = Console.ReadLine();
-            bookToReplece.Title = newTitle;
+            bookToReplace.Title = newTitle;
 
-            Console.WriteLine("Old Author: " + bookToReplece.Author);
+            Console.WriteLine("Old Author: " + bookToReplace.Author);
             Console.Write("New Author: ");
             string newAuthor = Console.ReadLine();
-            bookToReplece.Author = newAuthor;
+            bookToReplace.Author = newAuthor;
 
-            Console.WriteLine("Old Grade: " + bookToReplece.Grade);
+            Console.WriteLine("Old Grade: " + bookToReplace.Grade);
             Console.Write("New Grade: ");
             string newGrade = Console.ReadLine();
-            bookToReplece.Grade = newGrade;
+            bookToReplace.Grade = newGrade;
 
-            Console.WriteLine("Old Description: " + bookToReplece.Description);
+            Console.WriteLine("Old Description: " + bookToReplace.Description);
             Console.Write("New Description: ");
             string newDescription = Console.ReadLine();
-            bookToReplece.Description = newDescription;
-
-            _bookService.UpdateBook(bookToReplece);
-
-
+            bookToReplace.Description = newDescription;
+            _bookService.UpdateBook(bookToReplace);
         }
     }
 }
